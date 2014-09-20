@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 *.Rproj
+Dataset.zip
+/UCI\ HAR\ Dataset
