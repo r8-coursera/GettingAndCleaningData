@@ -48,3 +48,7 @@ dataSet <- dataSet[grepl("mean\\(\\)|std\\(\\)", setColumnNames)]
 dataSet <- cbind(dataSubjects, dataLabels, dataSet)
 # Set activity labels
 dataSet$activity <- activityLabels[dataSet$activity, 2]
+
+# Write merged data set
+write.table(dataSet, "data.txt")
+
