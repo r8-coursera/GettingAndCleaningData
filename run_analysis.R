@@ -27,7 +27,7 @@ readMergedData <- function(file, name=FALSE) {
 }
 
 # Download dataset
-#downloadDataset()
+downloadDataset()
 
 # Read features
 dataFeatures <- read.table(sprintf('%s/features.txt', datasetPath))
