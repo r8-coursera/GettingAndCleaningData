@@ -13,7 +13,7 @@ downloadDataset <- function() {
 ## Read and merge test and training data files
 readMergedData <- function(file, name=FALSE) {
   data <- data.frame()
-
+  
   for (folder in c('test', 'train')) {
     filename <- sprintf('%s/%s/%s_%s.txt', datasetPath, folder, file, folder)
     data <- rbind(data, read.table(filename))
@@ -36,19 +36,30 @@ setColumnNames <- dataFeatures$V2
 # Read merged set and labels data files
 dataLabels <- readMergedData('y', 'activity')
 dataSubjects <- readMergedData('subject', 'subject')
-dataSet <- readMergedData('X', setColumnNames)
+dataset <- readMergedData('X', setColumnNames)
 
 # Read activity labels
 activityLabels <- read.table(sprintf('%s/activity_labels.txt', datasetPath))
 
 # Use only mean and standart deviation
-dataSet <- dataSet[grepl("mean\\(\\)|std\\(\\)", setColumnNames)]
+dataset <- dataset[grepl("mean\\(\\)|std\\(\\)", setColumnNames)]
 
 # Merge data sets
-dataSet <- cbind(dataSubjects, dataLabels, dataSet)
+dataset <- cbind(dataSubjects, dataLabels, dataset)
 # Set activity labels
-dataSet$activity <- activityLabels[dataSet$activity, 2]
+dataset$activity <- activityLabels[dataset$activity, 2]
 
 # Write merged data set
-write.table(dataSet, "data.txt")
+write.table(dataset, "data.txt", sep="\t", row.names = FALSE)
 
+# Generate tidy data set
+tidyDataset <- aggregate(dataset, by=list(dataset$subject, dataset$activity), FUN=mean)
+
+# Remove activity and subject columns and rename aggregated columns
+tidyDataset$activity <- NULL
+tidyDataset$subject <- NULL
+names(tidyDataset)[names(tidyDataset) == 'Group.1'] <- 'subject'
+names(tidyDataset)[names(tidyDataset) == 'Group.2'] <- 'activity'
+
+# Write tidy data set
+write.table(tidyDataset, "tidy_data.txt", sep="\t", row.names = FALSE)
